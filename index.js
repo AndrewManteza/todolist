@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const TodoTask = require("./models/TodoTask");
+const TodoTask = require("./models/TodoTask.js");
 
 dotenv.config();
 
@@ -24,6 +24,7 @@ app.get("/", (req, res) => {
     });
     });
 
+    //Create
 app.post('/',async (req, res) => {
     const todoTask = new TodoTask({
     content: req.body.content
@@ -35,22 +36,24 @@ app.post('/',async (req, res) => {
     res.redirect("/");
     }
     });
-app
-.route("/edit/:id")
+app.route("/edit/:id")
 
-.get((req, res) => {
-const id = req.params.id;
-TodoTask.find({}, (err, tasks) => {
-res.render("todoEdit.ejs", { todoTasks: tasks, idTask: id });
-});
+//read
+
+app.get((req, res) => {
+    const id = req.params.id;
+    TodoTask.find({}, (err, tasks) => {
+        res.render("todoEdit.ejs", { todoTasks: tasks, idTask: id });
+    });
 })
 
-.post((req, res) => {
-const id = req.params.id;
-TodoTask.findByIdAndUpdate(id, { content: req.body.content }, err => {
-if (err) return res.send(500, err);
-res.redirect("/");
-});
+app.post((req, res) => {
+    const id = req.params.id;
+    
+    TodoTask.findByIdAndUpdate(id, { content: req.body.content }, err => {
+        if (err) return res.send(500, err);
+        res.redirect("/");
+    });
 });
 
 app.route("/remove/:id").get((req, res) => {
